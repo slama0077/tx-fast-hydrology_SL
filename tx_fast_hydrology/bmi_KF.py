@@ -27,6 +27,8 @@ UPSTREAM_INPUTS = {
     "5786029": "5785351",
     }
 
+EXCLUDE_GAGES = [8082000,8108780,8071000,8028500,8159110,8051500,8158045,8167200,8189700,8194200,8183500,8170500,8075900,8105888]
+
 
 class BmiKF:
     """BMI wrapper for the TX fast hydrology model collection with DA."""
@@ -100,7 +102,7 @@ class BmiKF:
                 )
             inputs = pd.DataFrame(0.0, index=time_index, columns=input_columns)
 
-        measurements = pd.read_csv(config["measurement_file_path"], index_col=0)
+        measurements = pd.read_csv(config["measurement_file_path"], index_col=0, usecols=lambda col: col not in EXCLUDE_GAGES)
         measurements.index = pd.to_datetime(measurements.index)
         measurements.columns = measurements.columns.astype(str)
 

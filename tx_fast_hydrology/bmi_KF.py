@@ -27,8 +27,7 @@ UPSTREAM_INPUTS = {
     "5786029": "5785351",
     }
 
-EXCLUDE_GAGES = [8082000,8108780,8071000,8028500,8159110,8051500,8158045,8167200,8189700,8194200,8183500,8170500,8075900,8105888]
-
+EXCLUDE_GAGES = [8158920,8159105, 8158600]
 
 class BmiKF:
     """BMI wrapper for the TX fast hydrology model collection with DA."""
@@ -211,16 +210,8 @@ class BmiKF:
             )
             self.output_var_store["reach_list"] = self.outputs_da.columns
 
-            #when run with t-route, we need the discharge for the same timestep
-            #however, the model_collection's datetime will be updated to be
-            #one step in the future
-            if not self.with_troute:
-                self.output_var_store["discharge"] = self.outputs_da.loc[
+            self.output_var_store["discharge"] = self.outputs_da.loc[
                     self.model_collection.datetime
-                ].values
-            else:
-                self.output_var_store["discharge"] = self.outputs_da.loc[
-                    self.model_collection.datetime - self.model_collection.timedelta
                 ].values
 
         #sort the reach_list once and apply everytime when updating

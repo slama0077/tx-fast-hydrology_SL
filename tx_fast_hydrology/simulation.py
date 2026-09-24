@@ -131,23 +131,21 @@ class AsyncSimulation(Simulation):
         outputs[start_time] = o_t_init
 
         if only_one_time_step:
+            #routing is already done, so we can update model's datetime to the next time step for kalman filter
+            if self.with_troute:
+                model.datetime += model.timedelta
+
             state = model.simulate_iter(
                 inputs, 
                 o_t_init=o_t_init, 
                 only_one_time_step=only_one_time_step, 
                 with_troute=self.with_troute
             )
-
-            # for with_troute, the current_time and start_time is going to be the same.
-            # because it only runs KF and never steps inside step_iter function
-            # where the model's time step is increased. But the discharge is going to be updated.
+            
             current_time = state.datetime
             o_t_next = state.o_t_next
             outputs[current_time] = o_t_next
 
-            # get the model ready for the next time step
-            if self.with_troute:
-                model.datetime += model.timedelta
         else:
             for state in model.simulate_iter(inputs, o_t_init=o_t_init, only_one_time_step=only_one_time_step):
                 current_time = state.datetime
